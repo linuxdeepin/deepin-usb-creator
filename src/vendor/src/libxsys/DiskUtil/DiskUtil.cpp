@@ -481,7 +481,7 @@ XSys::Result InstallSyslinux(const QString &targetDev, const QString &images)
 
     // rename label
     ret = XSys::SynExec(XSys::FS::SearchBin("fsck"), QString("-y %1").arg(targetDev));
-    XSys::Result ret3 = XSys::SynExec("isoinfo", QString("-i %1 -d").arg(images));
+    XSys::Result ret3 = XSys::SynExec("isoinfo", QString("-i \"%1\" -d").arg(images));
     if (!ret3.isSuccess()) {
         qWarning() << "call df failed" << ret3.result();
     }
