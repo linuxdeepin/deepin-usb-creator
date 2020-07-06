@@ -276,8 +276,7 @@ bool BootMaker::install(const QString &image, const QString &unused_device, cons
     if (!sevenZip.extract()) {
         //fix bug 32703,fix Unplug the USB flash disk
         QFileInfo devFile(partition);
-        if(!devFile.exists())
-        {
+        if(!devFile.exists()) {
             qCritical() << "Error::get(Error::USBMountFailed)";
             emit finished(USBMountFailed, errorString(USBMountFailed));
             return false;
