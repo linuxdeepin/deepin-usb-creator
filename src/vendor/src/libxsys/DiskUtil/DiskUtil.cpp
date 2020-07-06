@@ -487,6 +487,10 @@ XSys::Result InstallSyslinux(const QString &targetDev, const QString &images)
     }
     QStringList volume = ret3.result().split("\n").filter("Volume id");
     QString tem = volume.takeAt(0);
+
+    qDebug()  << QString(" %1 \'%2\'").arg(targetDev).arg(tem.split("Volume id: ").at(1));
+    ret = XSys::SynExec(XSys::FS::SearchBin("fatlabel"), QString(" %1 %2").arg(targetDev).arg(QString(tem.split("Volume id: ").at(1)).remove(QChar(' '), Qt::CaseInsensitive)));
+    /*
     if (tem.contains("Volume id: deepin", Qt::CaseInsensitive)) {
         ret = XSys::SynExec(XSys::FS::SearchBin("fatlabel"), QString(" %1 DEEPINOS").arg(targetDev));
     } else if (tem.contains("Volume id: uos", Qt::CaseInsensitive)) {
@@ -494,7 +498,7 @@ XSys::Result InstallSyslinux(const QString &targetDev, const QString &images)
     } else {
         ret = XSys::SynExec(XSys::FS::SearchBin("fatlabel"), QString(" %1 UKNOWN").arg(targetDev));
     }
-
+    */
     FixMountPartition(targetDev);
 
     return ret;
@@ -549,12 +553,16 @@ XSys::Result InstallBootloader(const QString &diskDev, const QString &images)
 
     // rename label  fix bug 20233 区分社区版专业版镜像设置U盘卷标名
     ret = XSys::SynExec(XSys::FS::SearchBin("fsck"), QString("-y %1").arg(newTargetDev));
-    XSys::Result ret3 = XSys::SynExec("isoinfo", QString("-i %1 -d").arg(images));
+    XSys::Result ret3 = XSys::SynExec("isoinfo", QString("-i \"%1\" -d").arg(images));
     if (!ret3.isSuccess()) {
         qWarning() << "call df failed" << ret3.result();
     }
     QStringList volume = ret3.result().split("\n").filter("Volume id");
     QString tem = volume.takeAt(0);
+
+    qDebug() << QString(" %1 \'%2\'").arg(newTargetDev).arg(tem.split("Volume id: ").at(1));
+    ret = XSys::SynExec(XSys::FS::SearchBin("fatlabel"), QString(" %1 %2").arg(newTargetDev).arg(QString(tem.split("Volume id: ").at(1)).remove(QChar(' '), Qt::CaseInsensitive)));
+    /*
     if (tem.contains("Volume id: deepin", Qt::CaseInsensitive)) {
         ret = XSys::SynExec(XSys::FS::SearchBin("fatlabel"), QString(" %1 DEEPINOS").arg(newTargetDev));
     } else if (tem.contains("Volume id: uos", Qt::CaseInsensitive)) {
@@ -562,6 +570,7 @@ XSys::Result InstallBootloader(const QString &diskDev, const QString &images)
     } else {
         ret = XSys::SynExec(XSys::FS::SearchBin("fatlabel"), QString(" %1 UKNOWN").arg(newTargetDev));
     }
+    */
     // install syslinux
     XSys::Syslinux::InstallBootloader(newTargetDev);
 
