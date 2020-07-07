@@ -160,8 +160,7 @@ bool BootMaker::install(const QString &image, const QString &unused_device, cons
             emit finished(USBSizeError, errorString(USBSizeError));
             return false;
         }
-    }
-    else {
+    } else {
         if (isoInfo.size() / KByt > XSys::DiskUtil::GetPartitionFreeSpace(partition)) {
             qCritical() << "Error::get(Error::USBSizeError)";
             emit finished(USBSizeError, errorString(USBSizeError));
