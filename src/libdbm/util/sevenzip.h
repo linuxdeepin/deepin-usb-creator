@@ -60,6 +60,7 @@ public:
 
     bool extract();
     bool check();
+    void rename() const;
 
 signals:
     void progressChanged(int);

@@ -286,6 +286,7 @@ bool BootMaker::install(const QString &image, const QString &unused_device, cons
 //        emit finished(USBSizeError, errorString(USBSizeError));
         return false;
     }
+    sevenZip.rename(); // fix:Modify the 7 z decompression of more than 65 incomplete problem in the file name
     this->reportProgress(80, Error::NoError, "end extract files", "");
     this->reportProgress(80, Error::NoError, "config syslinux", "");
     XSys::Bootloader::Syslinux::ConfigSyslinx(installDir);

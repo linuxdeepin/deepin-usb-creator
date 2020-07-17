@@ -1,4 +1,5 @@
 include($$PWD/vendor.pri)
+include($$PWD/hook/hooks.pri)
 
 QT       += network
 QT       -= gui
@@ -6,6 +7,7 @@ QT       -= gui
 TARGET = libdbm
 TEMPLATE = lib
 CONFIG += staticlib c++11 link_pkgconfig
+DEFINES += TOOLS_DIR=\\\"'$${PREFIX}/share/deepin-boot-maker/hooks'\\\"
 
 SOURCES += \
     backend/bootmaker.cpp \
@@ -47,7 +49,10 @@ linux {
 binary.path = $${PREFIX}/bin
 binary.files = $$PWD/qrc/xfbinst_x64 \
                $$PWD/qrc/xfbinst_x32
-INSTALLS += binary desktop hicolor
+
+tools.path = $${PREFIX}/share/deepin-boot-maker/hooks
+tools.files = $$PWD/hooks/rename_limit_file.sh
+INSTALLS += binary desktop hicolor tools
 }
 }
 }

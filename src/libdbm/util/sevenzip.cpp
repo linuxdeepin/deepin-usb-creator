@@ -54,7 +54,7 @@ SevenZip::SevenZip(const QString &image, const QString &target, QObject *parent)
     m_szpp = new SevenZipProcessParser("", &m_sevenz);
     m_sevenZip = sevnz;
     m_archiveFile = image;
-    m_outputDir = "-o" + target;
+    m_outputDir = target;
     //    connect(&m_szpp, &SevenZipProcessParser::progressChanged, this, &SevenZip::progressChanged);
     //    connect(&m_sevenz, static_cast<void(QProcess::*)(int exitCode)>(&QProcess::finished),
     //            this, &SevenZip::handleFinished);
@@ -70,7 +70,7 @@ bool SevenZip::extract()
     QStringList args;
     args << "x" << "-y"
          << m_archiveFile
-         << m_outputDir
+         << "-o" + m_outputDir
 #ifndef Q_OS_MAC
          << "-bsp2";
 #else
@@ -103,6 +103,29 @@ bool SevenZip::extract()
 
     return (m_sevenz.exitStatus() == QProcess::NormalExit) &&
            (0 == m_sevenz.exitCode());
+}
+
+void SevenZip::rename() const
+{
+    QString cmd = TOOLS_DIR "/rename_limit_file.sh";
+    QStringList args;
+    args << m_archiveFile << m_outputDir;
+    qDebug() << "rename_limit_file.sh file exists: " << QFileInfo::exists(cmd);
+    qDebug() << "cmd path: " << cmd;
+    qDebug() << "args list: " << m_archiveFile <<  "   " << m_outputDir;
+
+    QProcess process;
+    process.setProgram(cmd);
+    process.setArguments(args);
+    // Merge stdout and stderr of subprocess with main process.
+    process.start();
+    // Wait for process to finish without timeout.
+    process.waitForFinished(-1);
+    qDebug() << "rename_limit_file.sh file errorcode: " << process.error();
+    qDebug() << "rename_limit_file.sh file exitcode: " << process.exitCode();
+    qDebug() << "rename_limit_file.sh file exitcode: " << process.exitStatus();
+    qDebug() << "rename_limit_file.sh file output: " << process.readAllStandardOutput();
+    qDebug() << "rename_limit_file.sh file error: " << process.readAllStandardError();
 }
 
 bool SevenZip::check()
